@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jezreel AI - Ghana's Study Buddy</title>
+<link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiSmV6cmVlbCBBSSIsInNob3J0X25hbWUiOiJKZXpyZWVsIEFJIiwiZGlzcGxheSI6InN0YW5kYWxvbmUifQ==">
+<style>
+*{box-sizing:border-box}
+body{margin:0; background:#070a12; color:#e6e8f0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; display:flex; flex-direction:column; height:100vh; height:100dvh}
+#header{background:rgba(15,19,32,0.9); backdrop-filter:blur(12px); border-bottom:1px solid #1e2642; padding:12px 16px; position:sticky; top:0; z-index:10}
+.top{display:flex; justify-content:space-between; align-items:center}
+.logo{font-weight:800; font-size:18px; letter-spacing:-0.5px}
+.logo span{color:#5b8def}
+#subRow{display:flex; gap:6px; margin-top:10px; overflow-x:auto; padding-bottom:2px}
+.sub{white-space:nowrap; padding:6px 12px; background:#161c2e; border:1px solid #222d4d; border-radius:100px; font-size:12px; cursor:pointer; transition:.2s}
+.sub.active{background:#5b8def; border-color:#5b8def; color:white; font-weight:600}
+.sub:hover{border-color:#5b8def}
+#chat{flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:14px; background:radial-gradient(800px at 50% -200px, #162040 0%, transparent 60%)}
+.msg{max-width:88%; padding:12px 14px; border-radius:16px; line-height:1.65; font-size:14.5px; white-space:pre-wrap; word-wrap:break-word; animation:pop .2s ease}
+@keyframes pop{from{transform:translateY(6px); opacity:0} to{transform:none; opacity:1}}
+.user{align-self:flex-end; background:linear-gradient(135deg,#5b8def,#7a5bff); color:white; border-bottom-right-radius:4px}
+.ai{align-self:flex-start; background:#12182b; border:1px solid #1e2a4a; border-bottom-left-radius:4px}
+.ai b{color:#8fb0ff}
+.ai code{background:#0d1220; padding:2px 6px; border-radius:6px; font-size:13px}
+.time{font-size:10px; color:#6b7a9e; margin-top:6px}
+.example{display:inline-block; margin:4px; padding:8px 10px; background:#11172a; border:1px dashed #2a375f; border-radius:10px; font-size:12px; cursor:pointer}
+#bar{display:flex; gap:8px; padding:10px 12px; background:#0f1320; border-top:1px solid #1e2642; align-items:flex-end}
+#input{flex:1; padding:12px 14px; border-radius:12px; border:1px solid #222d4d; background:#161c2e; color:white; resize:none; max-height:120px; outline:none; font-size:15px}
+#input:focus{border-color:#5b8def}
+#send{width:44px; height:44px; border-radius:12px; border:none; background:#5b8def; color:white; font-size:18px; cursor:pointer}
+#clear{padding:8px 12px; border-radius:100px; border:1px solid #222d4d; background:transparent; color:#6b7a9e; font-size:11px; cursor:pointer}
+</style>
+</head>
+<body>
+<div id="header">
+  <div class="top">
+    <div class="logo">📚 Jezreel <span>AI</span></div>
+    <button id="clear" onclick="clearChat()">Clear Chat</button>
+  </div>
+  <div style="font-size:11px; color:#6b7a9e; margin-top:2px">Built in Ghana for BECE / WASSCE / Life Help • Works offline history</div>
+  <div id="subRow">
+    <div class="sub active" data-sub="General">🌍 General</div>
+    <div class="sub" data-sub="Maths">📐 Maths</div>
+    <div class="sub" data-sub="Science">🔬 Science</div>
+    <div class="sub" data-sub="English">📝 English</div>
+    <div class="sub" data-sub="Life Help">💡 Life Help</div>
+    <div class="sub" data-sub="ICT">💻 ICT</div>
+  </div>
+</div>
+
+<div id="chat">
+  <div class="msg ai">Hi, I'm <b>Jezreel AI</b> 🇬🇭<br><br>Ask me anything. I explain step-by-step like your best teacher.<br><br>Try:<br>
+    <span class="example" onclick="askEx(this)">Solve 2x + 5 = 15 for BECE</span>
+    <span class="example" onclick="askEx(this)">Explain photosynthesis for WASSCE</span>
+    <span class="example" onclick="askEx(this)">Write letter to my headmaster</span>
+    <div class="time">Now</div>
+  </div>
+</div>
+
+<div id="bar">
+  <textarea id="input" rows="1" placeholder="Ask anything... e.g. Maths, Science, advice"></textarea>
+  <button id="send">↑</button>
+</div>
+
+<script>
+const API_KEY = "PASTE_YOUR_GEMINI_KEY_HERE";
+let activeSubject = "General";
+const chat = document.getElementById('chat');
+const input = document.getElementById('input');
+
+// Subjects
+document.querySelectorAll('.sub').forEach(s=>{
+  s.onclick=()=>{
+    document.querySelectorAll('.sub').forEach(x=>x.classList.remove('active'));
+    s.classList.add('active'); activeSubject=s.dataset.sub;
+  }
+});
+
+function askEx(el){ input.value=el.innerText; sendMessage(); }
+function clearChat(){ if(confirm("Clear chat?")){ chat.innerHTML=`<div class="msg ai">Chat cleared. What next?<div class="time">Now</div></div>`; localStorage.removeItem('jez_chat'); } }
+function timeNow(){ return new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}); }
+
+async function sendMessage(){
+  const text = input.value.trim(); if(!text) return;
+  const userDiv = document.createElement('div'); userDiv.className="msg user"; userDiv.innerHTML=`${text}<div class="time" style="color:#d0dcff">${timeNow()}</div>`;
+  chat.appendChild(userDiv); input.value=""; input.style.height="44px"; chat.scrollTop=chat.scrollHeight;
+
+  const aiDiv = document.createElement('div'); aiDiv.className="msg ai"; aiDiv.innerHTML=`Thinking in ${activeSubject}... •••`; chat.appendChild(aiDiv); chat.scrollTop=chat.scrollHeight;
+
+  // Upgraded Prompt for Ghana
+  const systemPrompt = `You are Jezreel AI, created in Ghana. You are friendly, patient teacher for BECE, WASSCE, JHS, SHS students.
+Subject: ${activeSubject}
+Rules:
+- Explain step-by-step, simple English, with examples Ghana students know.
+- For Maths, show every step.
+- For Science, use everyday life examples.
+- For English, correct gently and give better version.
+- For Life Help, be kind, like older brother/sister, no judgment.
+- Keep answers short but complete (max 250 words unless asked more).
+- End with 1 quick practice question when it's study.
+Question: ${text}`;
+
+  try{
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`,{
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({contents:[{parts:[{text:systemPrompt}]}]})
+    });
+    const data = await res.json();
+    if(data.error){ aiDiv.innerHTML=`❌ Error: ${data.error.message}<br><br>Did you paste your API key correctly? Go to aistudio.google.com and copy it.`; return; }
+    let reply = data.candidates[0].content.parts[0].text;
+    reply = reply.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+    aiDiv.innerHTML = `${reply}<div class="time">${timeNow()} • ${activeSubject}</div>`;
+  }catch(e){
+    aiDiv.innerHTML=`⚠️ Network error: ${e.message}<br>Check your data and try again.`;
+  }
+  chat.scrollTop=chat.scrollHeight;
+  localStorage.setItem('jez_chat', chat.innerHTML);
+}
+
+// Events
+document.getElementById('send').onclick=sendMessage;
+input.addEventListener('keydown', e=>{ if(e.key==="Enter" && !e.shiftKey){ e.preventDefault(); sendMessage(); } });
+input.addEventListener('input', ()=>{ input.style.height='auto'; input.style.height=input.scrollHeight+'px'; });
+
+// Load history
+const saved = localStorage.getItem('jez_chat'); if(saved && saved.length>100){ chat.innerHTML=saved; chat.scrollTop=chat.scrollHeight; }
+</script>
+</body>
+                                                                            </html>
