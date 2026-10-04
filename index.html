@@ -49,7 +49,7 @@ async function send(){
   let r=await fetch("https://api.groq.com/openai/v1/chat/completions",{
    method:"POST",
    headers:{"Content-Type":"application/json","Authorization":"Bearer "+API_KEY},
-   body:JSON.stringify({model:"llama-3.1-8b-instant",messages:[{role:"system",content:"You are Jezreel AI, a helpful friendly assistant built by Jezreel."},{role:"user",content:q}]})
+   body:JSON.stringify({model:"openai/gpt-oss-20b",messages:[{role:"system",content:"You are Jezreel AI, a helpful friendly assistant built by Jezreel."},{role:"user",content:q}]})
   });
   let d=await r.json();
   thinking.remove();
