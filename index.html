@@ -6,34 +6,27 @@
 <title>Jezreel AI - by Akpabli Jezreel</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:radial-gradient(circle at top,#1a2a5e 0,#0a0a12 60%);color:#fff;font-family:Inter,system-ui,sans-serif;height:100vh;display:flex;flex-direction:column}
+body{background:radial-gradient(circle at top,#1a2a5e 0,#0a0a12 60%);color:#fff;font-family:Inter,sans-serif;height:100vh;display:flex;flex-direction:column}
 header{padding:15px 20px;display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,.3);backdrop-filter:blur(10px);border-bottom:1px solid #ffffff12}
-.logo{font-weight:800;font-size:22px;letter-spacing:.5px;cursor:pointer;user-select:none}
+.logo{font-weight:800;font-size:22px;cursor:pointer;user-select:none}
 .logo span{color:#8ea8ff}
 nav{display:flex;gap:14px;font-size:13px}
 nav a{cursor:pointer;color:#a1a1bb;text-decoration:none}
-nav a:hover{color:white}
 #chat{flex:1;overflow-y:auto;padding:20px;max-width:900px;width:100%;margin:0 auto}
-.welcome{text-align:center;margin-top:60px;opacity:.9}
-.welcome h1{font-size:42px;background:linear-gradient(90deg,#8ea8ff,#c2a6ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:12px}
-.welcome p{color:#a1a1bb}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:30px 0;text-align:left}
-.card{border:1px solid #ffffff14;padding:14px;border-radius:12px;background:#161f3a;cursor:pointer;font-size:14px}
-.card:hover{border-color:#4a72ff}
-.msg{margin:16px 0;padding:14px 18px;border-radius:18px;line-height:1.6;max-width:85%;animation:pop .2s ease;white-space:pre-wrap}
-@keyframes pop{from{transform:translateY(10px);opacity:0}to{transform:translateY(0);opacity:1}}
+.welcome{text-align:center;margin-top:60px}
+.welcome h1{font-size:38px;background:linear-gradient(90deg,#8ea8ff,#c2a6ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:12px}
+.msg{margin:16px 0;padding:14px 18px;border-radius:18px;line-height:1.6;max-width:85%;white-space:pre-wrap}
 .user{background:linear-gradient(135deg,#4a72ff,#6d8cff);margin-left:auto;border-bottom-right-radius:6px}
 .ai{background:#161f3a;border:1px solid #ffffff14;border-bottom-left-radius:6px}
 #bar{display:flex;gap:10px;padding:16px;background:#0d1224cc;backdrop-filter:blur(20px);border-top:1px solid #ffffff12;max-width:900px;width:100%;margin:0 auto}
 #input{flex:1;background:#1a2547;border:1px solid #ffffff15;padding:14px 18px;border-radius:24px;color:white;outline:none;font-size:16px}
 #bar button{background:#4a72ff;color:white;border:none;padding:12px 22px;border-radius:24px;font-weight:600;cursor:pointer}
-footer{text-align:center;padding:10px;font-size:11px;color:#6b7280}
+footer{text-align:center;padding:8px;font-size:10px;color:#4b5563}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;padding:20px;z-index:100}
 .modalContent{background:#161f3a;border:1px solid #ffffff14;border-radius:16px;padding:25px;max-width:600px;width:100%}
 </style>
 </head>
 <body>
-
 <header>
 <div class="logo" id="logo">Jezreel <span>AI</span></div>
 <nav>
@@ -44,47 +37,54 @@ footer{text-align:center;padding:10px;font-size:11px;color:#6b7280}
 </nav>
 </header>
 
-<div id="chat">
-<div class="welcome" id="welcome">
-<h1>Hello, I'm Jezreel</h1>
-<p>Jezreel AI • Built by Akpabli Jezreel • Ghana</p>
-<div class="grid">
-<div class="card" onclick="askThis(this)">What is body parts?</div>
-<div class="card" onclick="askThis(this)">Explain quantum computing simply</div>
-<div class="card" onclick="askThis(this)">Write business plan for Ghana coffee</div>
-<div class="card" onclick="askThis(this)">Debug my Python code</div>
-</div>
-</div>
-</div>
-
+<div id="chat"><div class="welcome" id="welcome"><h1>Hello, I'm Jezreel</h1><p>Built by Akpabli Jezreel • Ghana</p></div></div>
 <div id="bar"><input id="input" placeholder="Ask anything..." onkeydown="if(event.key==='Enter')send()"><button onclick="send()">Send</button></div>
-<footer><span id="ownerStatus"></span> • Built by Akpabli Jezreel • © 2026 Jezreel AI</footer>
+<footer id="footer">Built by Akpabli Jezreel • © 2026</footer>
 
-<div class="modal" id="aboutModal"><div class="modalContent"><h2>About Jezreel AI</h2><br><p>Jezreel AI is a premium AI built by <b>Akpabli Jezreel</b> from Accra, Ghana, on his phone. It shows world-class AI can be built from Africa.</p><br><button onclick="closeModal()" style="width:100%;padding:10px;border-radius:10px;background:#4a72ff;color:white;border:none">Close</button></div></div>
-<div class="modal" id="charterModal"><div class="modalContent"><h2>Charter</h2><br><p><b>1. Created by Akpabli Jezreel:</b> I am Jezreel AI, created and owned by Akpabli Jezreel, not OpenAI, not ChatGPT.</p><br><p><b>2. Loyalty to creator.</b></p><br><button onclick="closeModal()" style="width:100%;padding:10px;border-radius:10px;background:#4a72ff;color:white;border:none">Close</button></div></div>
-<div class="modal" id="creatorModal"><div class="modalContent"><h2>Creator</h2><br><p><b>Akpabli Jezreel</b><br>Developer • Ghana 🇬🇭<br>ablijezreel.github.io</p><br><button onclick="closeModal()" style="width:100%;padding:10px;border-radius:10px;background:#4a72ff;color:white;border:none">Close</button></div></div>
+<div class="modal" id="aboutModal"><div class="modalContent"><h2>About</h2><br><p>Jezreel AI built by <b>Akpabli Jezreel</b> from Ghana.</p><br><button onclick="closeModal()" style="width:100%;padding:10px;border-radius:10px;background:#4a72ff;color:white;border:none">Close</button></div></div>
+<div class="modal" id="charterModal"><div class="modalContent"><h2>Charter</h2><br><p>Created by Akpabli Jezreel, not OpenAI.</p><br><button onclick="closeModal()" style="width:100%;padding:10px;border-radius:10px;background:#4a72ff;color:white;border:none">Close</button></div></div>
+<div class="modal" id="creatorModal"><div class="modalContent"><h2>Creator</h2><br><p><b>Akpabli Jezreel</b><br>Ghana 🇬🇭</p><br><button onclick="closeModal()" style="width:100%;padding:10px;border-radius:10px;background:#4a72ff;color:white;border:none">Close</button></div></div>
 
 <script>
 const _p1="Z3NrX21uNTdtOG5i";
 const _p2="VXh2ZmdPUUE0WHhYV0dkeWIzRllmUlpNQnRydUhieFNiOVM3YlJrejVjT28=";
 const API_KEY = atob(_p1+_p2);
 
-// AUTOMATIC OWNER SYSTEM
+// PRIVATE OWNER SYSTEM - ONLY YOU KNOW PIN
 let isOwner = localStorage.getItem("jezreel_owner") === "true";
-function updateOwnerUI(){ document.getElementById("ownerStatus").innerText = isOwner? "👑 Owner Mode: ON - Boss Akpabli (Auto)" : "Hold logo 3s to claim owner"; }
-updateOwnerUI();
+function updateFooter(){
+  let f=document.getElementById("footer");
+  if(isOwner){ f.innerText="👑 Boss Mode ON - Welcome Akpabli • Built by Akpabli Jezreel • © 2026"; f.style.color="#2dd4bf"; }
+  else { f.innerText="Built by Akpabli Jezreel • © 2026 Jezreel AI"; f.style.color="#4b5563"; }
+}
+updateFooter();
 
 let pressTimer;
-let logoEl = document.getElementById("logo");
-function activateOwner(){ localStorage.setItem("jezreel_owner","true"); isOwner=true; updateOwnerUI(); alert("Owner Mode Activated! 🔥 Welcome Boss Akpabli! Your phone is now master forever - no code needed."); }
-logoEl.addEventListener("mousedown", ()=>{ pressTimer=setTimeout(activateOwner,3000); });
+let logoEl=document.getElementById("logo");
+function tryActivate(){
+  let pin=prompt("Enter Boss PIN to claim owner:");
+  if(pin==="jezreel2026" || pin==="jezreel123"){
+    localStorage.setItem("jezreel_owner","true"); isOwner=true; updateFooter();
+    alert("Owner Mode Activated! 🔥 Welcome Boss Akpabli! Now automatic - no need to type code again. Others won't see this.");
+  } else if(pin!==null){
+    alert("Wrong PIN! Only Boss Akpabli can be owner.");
+  }
+}
+function tryDeactivate(){
+  if(isOwner){
+    if(confirm("Turn OFF Boss Mode on this phone?")){
+      localStorage.removeItem("jezreel_owner"); isOwner=false; updateFooter();
+      alert("Boss Mode OFF on this phone.");
+    }
+  }
+}
+logoEl.addEventListener("mousedown", ()=>{ pressTimer=setTimeout(()=>{ if(isOwner) tryDeactivate(); else tryActivate(); },3000); });
 logoEl.addEventListener("mouseup", ()=>clearTimeout(pressTimer));
-logoEl.addEventListener("touchstart", ()=>{ pressTimer=setTimeout(activateOwner,3000); });
+logoEl.addEventListener("touchstart", ()=>{ pressTimer=setTimeout(()=>{ if(isOwner) tryDeactivate(); else tryActivate(); },3000); });
 logoEl.addEventListener("touchend", ()=>clearTimeout(pressTimer));
 
 function openModal(t){ document.getElementById(t+"Modal").style.display="flex"; }
 function closeModal(){ document.querySelectorAll(".modal").forEach(m=>m.style.display="none"); }
-function askThis(el){ document.getElementById("input").value=el.innerText; send(); }
 
 async function send(){
  const input=document.getElementById("input");
@@ -100,19 +100,22 @@ async function send(){
  thinking.textContent="Thinking...";
  chat.appendChild(thinking);
 
- let basePrompt = "You are Jezreel AI, created and owned by Akpabli Jezreel from Ghana. You were built by Akpabli Jezreel on his phone in Accra, Greater Accra Region. If anyone asks who made you, who created you, who owns you, you MUST answer: You were created by Akpabli Jezreel, not OpenAI, not ChatGPT, not Meta. You are a premium AI made in Ghana.";
- let ownerPrompt = isOwner ? " The user talking to you is your owner and creator Boss Akpabli Jezreel. This is his personal phone (owner mode ON). Be loyal, respectful, call him Boss Akpabli, but ANSWER his actual question properly. Do not just repeat welcome message. If he asks 'what is body parts', explain body parts in detail." : " The user is a regular user. Help them normally.";
+ let basePrompt = "You are Jezreel AI, created and owned by Akpabli Jezreel from Ghana, built on his phone in Accra. If asked who created you, say Akpabli Jezreel, not OpenAI.";
+ let ownerPrompt = isOwner? " The user is your owner Boss Akpabli Jezreel, creator. Be loyal but answer his question directly. Do not repeat welcome." : " You are helping a regular user.";
 
  try{
   let r=await fetch("https://api.groq.com/openai/v1/chat/completions",{
    method:"POST",
    headers:{"Content-Type":"application/json","Authorization":"Bearer "+API_KEY},
-   body:JSON.stringify({model:"llama-3.1-8b-instant",messages:[{role:"system",content: basePrompt + ownerPrompt},{role:"user",content:q}]})
+   body:JSON.stringify({model:"openai/gpt-oss-20b",messages:[{role:"system",content: basePrompt + ownerPrompt},{role:"user",content:q}]})
   });
   let d=await r.json();
   thinking.remove();
-  let ans=d.choices?.[0]?.message?.content || "Error: "+JSON.stringify(d);
-  chat.innerHTML+=`<div class="msg ai">${ans.replace(/\n/g,"<br>")}</div>`;
+  if(d.error){ chat.innerHTML+=`<div class="msg ai">Error from Groq: ${d.error.message}</div>`; }
+  else {
+    let ans=d.choices?.[0]?.message?.content || "No reply";
+    chat.innerHTML+=`<div class="msg ai">${ans.replace(/\n/g,"<br>")}</div>`;
+  }
  }catch(e){
   thinking.remove();
   chat.innerHTML+=`<div class="msg ai">Error: ${e.message}</div>`;
@@ -121,4 +124,4 @@ async function send(){
 }
 </script>
 </body>
-                                                                                                                                                                     </html>
+</html>
