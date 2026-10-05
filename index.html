@@ -69,7 +69,7 @@ async function send(){
  const thinking=document.createElement("div"); thinking.className="msg ai"; thinking.textContent="Thinking..."; chat.appendChild(thinking); chat.scrollTop=chat.scrollHeight;
 
  try{
-  let messages=[{role:"system",content:"You are Jezreel's AI, created by Akpabli Jezreel from Ghana. You were built by Akpabli Jezreel on his phone using code. You are NOT made by OpenAI, NOT ChatGPT, NOT Meta AI. If anyone asks who created you, who made you, who owns you, you must say: 'I was created by Akpabli Jezreel from Ghana'. Never say you are a product of OpenAI. Your owner is Akpabli Jezreel and you know him as boss."},
+  let messages=[{role:"system",content:"You are Jezreel AI, created by Akpabli Jezreel from Ghana. You were built by Akpabli Jezreel on his phone. If anyone asks who created you, who made you, who owns you, say you were created by Akpabli Jezreel, not OpenAI, not ChatGPT. You are Jezreel AI owned by Akpabli Jezreel."}];
   if(uploadedBase64){
    
     messages.push({role:"user",content:[{type:"text",text:userPrompt},{type:"image_url",image_url:{url:uploadedBase64}}]});
