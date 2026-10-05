@@ -6,145 +6,237 @@
 <title>Jezreel AI - by Akpabli Jezreel</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:radial-gradient(circle at top,#1a2a5e 0,#0a0a12 60%);color:#fff;font-family:Inter,system-ui,sans-serif;height:100vh;display:flex;flex-direction:column}
-header{padding:15px 20px;display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,.3);backdrop-filter:blur(10px);border-bottom:1px solid #ffffff12}
-.logo{font-weight:800;font-size:22px;cursor:pointer;user-select:none}
-.logo span{color:#8ea8ff}
-nav{display:flex;gap:14px;font-size:13px}
-nav a{cursor:pointer;color:#a1a1bb;text-decoration:none}
-#chat{flex:1;overflow-y:auto;padding:20px;max-width:900px;width:100%;margin:0 auto}
-.welcome{text-align:center;margin-top:50px}
-.welcome h1{font-size:38px;background:linear-gradient(90deg,#8ea8ff,#c2a6ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:12px}
-.msg{margin:14px 0;padding:14px 18px;border-radius:18px;line-height:1.6;max-width:85%;white-space:pre-wrap;word-wrap:break-word}
-.user{background:linear-gradient(135deg,#4a72ff,#6d8cff);margin-left:auto;border-bottom-right-radius:6px}
-.ai{background:#161f3a;border:1px solid #ffffff14;border-bottom-left-radius:6px}
-.msg img{max-width:100%;border-radius:12px;margin-top:10px}
-#bar{display:flex;gap:8px;padding:12px;background:#0d1224cc;backdrop-filter:blur(20px);border-top:1px solid #ffffff12;max-width:900px;width:100%;margin:0 auto;align-items:center}
-#input{flex:1;background:#1a2547;border:1px solid #ffffff15;padding:14px 18px;border-radius:24px;color:white;outline:none;font-size:16px}
-#bar button{background:#4a72ff;color:white;border:none;padding:12px 18px;border-radius:24px;font-weight:600;cursor:pointer}
-.iconBtn{background:#1a2547!important;border:1px solid #ffffff15!important;font-size:20px;padding:8px 12px!important}
-footer{text-align:center;padding:8px;font-size:10px;color:#4b5563}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;padding:20px;z-index:100}
-.modalContent{background:#161f3a;border:1px solid #ffffff14;border-radius:16px;padding:25px;max-width:600px;width:100%}
+body{background:#0a0a12;color:#fff;font-family:Inter,system-ui,sans-serif;height:100vh;display:flex;flex-direction:column;overflow:hidden;position:relative}
+#bgCanvas{position:fixed;inset:0;z-index:-1;opacity:0.6}
+header{padding:14px 20px;display:flex;justify-content:space-between;align-items:center;background:rgba(10,12,36,0.7);backdrop-filter:blur(20px);border-bottom:1px solid #ffffff12;z-index:10}
+.logo{font-weight:900;font-size:23px;cursor:pointer;user-select:none;letter-spacing:.5px}
+.logo span{background:linear-gradient(90deg,#8ea8ff,#ff8ec3,#8ea8ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shine 3s linear infinite;background-size:200%}
+@keyframes shine{to{background-position:200%}}
+nav{display:flex;gap:12px;font-size:12px}
+nav a{cursor:pointer;color:#a1a1bb;background:rgba(255,255,255,.06);padding:6px 10px;border-radius:20px;text-decoration:none}
+#chat{flex:1;overflow-y:auto;padding:20px;max-width:900px;width:100%;margin:0 auto;position:relative;z-index:1}
+.welcome{text-align:center;margin-top:40px}
+.welcome h1{font-size:42px;background:linear-gradient(90deg,#8ea8ff,#c2a6ff,#ff8ec3);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px;font-weight:800}
+.welcome p{color:#a1a1bb;margin-bottom:25px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.chip{border:1px solid #ffffff18;padding:10px 14px;border-radius:20px;background:rgba(22,31,58,.8);backdrop-filter:blur(10px);cursor:pointer;font-size:13px;transition:.2s}
+.chip:hover{border-color:#8ea8ff;transform:translateY(-2px)}
+.msgWrap{margin:16px 0;display:flex;flex-direction:column;position:relative}
+.msg{padding:14px 18px;border-radius:20px;line-height:1.6;max-width:85%;white-space:pre-wrap;word-wrap:break-word;backdrop-filter:blur(15px);transition:transform.2s;cursor:grab}
+.msg:active{cursor:grabbing}
+.user{background:linear-gradient(135deg,#4a72ff 0%,#8a6bff 100%);margin-left:auto;border-bottom-right-radius:6px;box-shadow:0 8px 25px rgba(74,114,255,.3)}
+.ai{background:rgba(22,31,58,.9);border:1px solid #ffffff14;margin-right:auto;border-bottom-left-radius:6px}
+.msg img,.msg video{max-width:100%;border-radius:12px;margin-top:10px}
+.replyPreview{font-size:11px;opacity:.7;border-left:2px solid #8ea8ff;padding-left:8px;margin-bottom:6px;color:#8ea8ff}
+.swipeHint{font-size:10px;color:#6b7280;margin:2px 10px;opacity:0}
+.msgWrap:hover.swipeHint{opacity:1}
+#replyBar{display:none;background:rgba(22,31,58,.95);border-left:3px solid #8ea8ff;padding:8px 15px;margin:0 auto;max-width:900px;width:100%;font-size:12px;color:#a1a1bb;align-items:center;justify-content:space-between;backdrop-filter:blur(10px)}
+#bar{display:flex;gap:8px;padding:12px;background:rgba(13,18,36,.85);backdrop-filter:blur(25px);border-top:1px solid #ffffff12;max-width:900px;width:100%;margin:0 auto;align-items:center;z-index:10}
+#input{flex:1;background:rgba(26,37,71,.9);border:1px solid #ffffff15;padding:14px 18px;border-radius:28px;color:white;outline:none;font-size:16px}
+.iconBtn{background:rgba(255,255,255,.08)!important;border:1px solid #ffffff15!important;font-size:18px;padding:10px 13px!important;border-radius:50%!important;color:white;cursor:pointer}
+.sendBtn{background:linear-gradient(135deg,#4a72ff,#8a6bff)!important;padding:12px 22px!important;border-radius:28px!important;font-weight:700!important}
+footer{text-align:center;padding:6px;font-size:9px;color:#4b5563;z-index:10}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;padding:20px;z-index:100;backdrop-filter:blur(10px)}
+.modalContent{background:rgba(22,31,58,.95);border:1px solid #ffffff18;border-radius:20px;padding:25px;max-width:600px;width:100%;backdrop-filter:blur(20px)}
 </style>
 </head>
 <body>
+<canvas id="bgCanvas"></canvas>
+
 <header>
 <div class="logo" id="logo">Jezreel <span>AI</span></div>
 <nav>
 <a onclick="openModal('about')">About</a>
 <a onclick="openModal('charter')">Charter</a>
 <a onclick="openModal('creator')">Creator</a>
-<a>Accra 🇬🇭</a>
+<a>GH 🇬🇭</a>
 </nav>
 </header>
 
-<div id="chat"><div class="welcome" id="welcome"><h1>Hello, I'm Jezreel</h1><p>Built by Akpabli Jezreel • Upload image, create image, ask anything</p></div></div>
+<div id="chat">
+<div class="welcome" id="welcome">
+<h1>Jezreel AI ✨</h1>
+<p>Built by Akpabli Jezreel • Upload video, image, audio • Swipe to reply</p>
+<div class="chips">
+<div class="chip" onclick="askThis('Explain this photo for me')">🖼️ Explain image</div>
+<div class="chip" onclick="askThis('Create image of Ghanaian tech boy with laptop in Accra')">🎨 Create image</div>
+<div class="chip" onclick="askThis('Summarize my audio')">🎙️ Transcribe audio</div>
+<div class="chip" onclick="askThis('What is happening in this video?')">🎬 Analyze video</div>
+</div>
+</div>
+</div>
+
+<div id="replyBar"><div><b id="replyToText" style="color:#8ea8ff"></b><br><span id="replyContent"></span></div><button onclick="cancelReply()" style="background:none;border:none;color:white;font-size:20px;cursor:pointer">×</button></div>
 
 <div id="bar">
 <button class="iconBtn" onclick="document.getElementById('fileInput').click()">📎</button>
-<input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleImage(this)">
-<input id="input" placeholder="Ask, upload image, or say 'create image of...'" onkeydown="if(event.key==='Enter')send()">
-<button onclick="send()">Send</button>
+<input type="file" id="fileInput" accept="image/*,video/*,audio/*" style="display:none" onchange="handleFile(this)">
+<input id="input" placeholder="Message, upload, or 'create image...'" onkeydown="if(event.key==='Enter')send()">
+<button class="sendBtn" onclick="send()">➤</button>
 </div>
-<footer id="footer">Built by Akpabli Jezreel • © 2026</footer>
+<footer id="footer">Built by Akpabli Jezreel • © 2026 • Monetization Ready</footer>
 
-<div class="modal" id="aboutModal"><div class="modalContent"><h2>About Jezreel AI</h2><br><p>Premium AI built by <b>Akpabli Jezreel</b> from Accra, Ghana. Can chat, read images, and generate images.</p><br><button onclick="closeModal()" style="width:100%;padding:10px;border-radius:10px;background:#4a72ff;color:white;border:none">Close</button></div></div>
-<div class="modal" id="charterModal"><div class="modalContent"><h2>Charter</h2><br><p>Created by Akpabli Jezreel, not OpenAI, not ChatGPT.</p><br><button onclick="closeModal()" style="width:100%;padding:10px;border-radius:10px;background:#4a72ff;color:white;border:none">Close</button></div></div>
-<div class="modal" id="creatorModal"><div class="modalContent"><h2>Creator</h2><br><p><b>Akpabli Jezreel</b><br>Ghana 🇬🇭<br>ablijezreel.github.io</p><br><button onclick="closeModal()" style="width:100%;padding:10px;border-radius:10px;background:#4a72ff;color:white;border:none">Close</button></div></div>
+<div class="modal" id="aboutModal"><div class="modalContent"><h2>About Jezreel AI</h2><br><p>Premium AI built by <b>Akpabli Jezreel</b> from Accra. Supports text, image, video, audio, image generation. Swipe any message to reply to it.</p><br><button onclick="closeModal()" style="width:100%;padding:12px;border-radius:12px;background:#4a72ff;color:white;border:none">Close</button></div></div>
+<div class="modal" id="charterModal"><div class="modalContent"><h2>Charter</h2><br><p>Created and owned by <b>Akpabli Jezreel</b>, not OpenAI.</p><br><button onclick="closeModal()" style="width:100%;padding:12px;border-radius:12px;background:#4a72ff;color:white;border:none">Close</button></div></div>
+<div class="modal" id="creatorModal"><div class="modalContent"><h2>Creator</h2><br><p><b>Akpabli Jezreel</b><br>Ghana 🇬🇭<br>ablijezreel.github.io<br><br><b>Monetization:</b> Paystack / Stripe ready</p><br><button onclick="closeModal()" style="width:100%;padding:12px;border-radius:12px;background:#4a72ff;color:white;border:none">Close</button></div></div>
 
 <script>
 const _p1="Z3NrX21uNTdtOG5i";
 const _p2="VXh2ZmdPUUE0WHhYV0dkeWIzRllmUlpNQnRydUhieFNiOVM3YlJrejVjT28=";
 const API_KEY = atob(_p1+_p2);
 
-let isOwner = localStorage.getItem("jezreel_owner")==="true";
-let pendingImageBase64 = null;
+let chatHistory=[];
+let replyingTo=null;
+let pendingFile=null;
+let pendingFileType=null;
+let pendingBase64=null;
+
+// === COOL BACKGROUND LIKE META AI ===
+const canvas=document.getElementById('bgCanvas');
+const ctx=canvas.getContext('2d');
+function resize(){ canvas.width=window.innerWidth; canvas.height=window.innerHeight; }
+resize(); window.addEventListener('resize',resize);
+let particles=[];
+for(let i=0;i<50;i++){ particles.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*3+1,dx:(Math.random()-.5)*0.5,dy:(Math.random()-.5)*0.5,color:`hsla(${220+Math.random()*60},100%,70%,0.3)`}); }
+function animate(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  particles.forEach(p=>{
+    p.x+=p.dx; p.y+=p.dy;
+    if(p.x<0||p.x>canvas.width) p.dx*=-1;
+    if(p.y<0||p.y>canvas.height) p.dy*=-1;
+    ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fillStyle=p.color; ctx.fill();
+    // draw connections
+    particles.forEach(p2=>{
+      let dist=Math.hypot(p.x-p2.x,p.y-p2.y);
+      if(dist<120){ ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(p2.x,p2.y); ctx.strokeStyle=`rgba(142,168,255,${0.1*(1-dist/120)})`; ctx.stroke(); }
+    });
+  });
+  requestAnimationFrame(animate);
+}
+animate();
+
+// === AUTOMATIC BOSS - YOUR PHONE ONLY ===
+let isOwner=localStorage.getItem("jezreel_owner")==="true";
+if(window.location.search.includes("makeboss=jezreel")){
+  localStorage.setItem("jezreel_owner","true"); isOwner=true;
+  alert("👑 Boss Mode AUTO Activated! Welcome Boss Akpabli!");
+  window.history.replaceState({},document.title,window.location.pathname);
+}
 function updateFooter(){
   let f=document.getElementById("footer");
-  if(isOwner){ f.innerText="👑 Boss Mode ON - Welcome Akpabli (Auto) • Built by Akpabli Jezreel"; f.style.color="#2dd4bf"; }
-  else { f.innerText="Built by Akpabli Jezreel • © 2026"; f.style.color="#4b5563"; }
+  if(isOwner){ f.innerText="👑 Boss Mode ON - Welcome Boss Akpabli (Auto) • Monetization: Active • © 2026"; f.style.color="#2dd4bf"; }
+  else { f.innerText="Built by Akpabli Jezreel • Free • © 2026"; }
 }
 updateFooter();
 let pressTimer;
-let logoEl=document.getElementById("logo");
-function tryActivate(){
-  let pin=prompt("Enter Boss PIN:");
-  if(pin==="jezreel2026"||pin==="jezreel123"){ localStorage.setItem("jezreel_owner","true"); isOwner=true; updateFooter(); alert("Boss Mode ON 🔥 Automatic now!"); }
-  else if(pin!==null) alert("Wrong PIN!");
-}
-function tryDeactivate(){
-  if(isOwner && confirm("Turn OFF Boss Mode?")){ localStorage.removeItem("jezreel_owner"); isOwner=false; updateFooter(); alert("Boss Mode OFF"); }
-}
-logoEl.addEventListener("mousedown", ()=>{ pressTimer=setTimeout(()=>{ isOwner?tryDeactivate():tryActivate(); },3000); });
-logoEl.addEventListener("mouseup", ()=>clearTimeout(pressTimer));
-logoEl.addEventListener("touchstart", ()=>{ pressTimer=setTimeout(()=>{ isOwner?tryDeactivate():tryActivate(); },3000); });
-logoEl.addEventListener("touchend", ()=>clearTimeout(pressTimer));
+document.getElementById("logo").addEventListener("touchstart",()=>{ pressTimer=setTimeout(()=>{ if(isOwner && confirm("OFF Boss Mode?")){ localStorage.removeItem("jezreel_owner"); isOwner=false; updateFooter(); } },3000); });
+document.getElementById("logo").addEventListener("touchend",()=>clearTimeout(pressTimer));
+
 function openModal(t){ document.getElementById(t+"Modal").style.display="flex"; }
 function closeModal(){ document.querySelectorAll(".modal").forEach(m=>m.style.display="none"); }
+function askThis(t){ document.getElementById("input").value=t; send(); }
 
-function handleImage(input){
-  let file=input.files[0];
-  if(!file) return;
+// === SWIPE TO REPLY ===
+let startX=0;
+function enableSwipe(el,text){
+  el.addEventListener('touchstart',e=>{ startX=e.touches[0].clientX; },{passive:true});
+  el.addEventListener('touchend',e=>{
+    let diff=e.changedTouches[0].clientX-startX;
+    if(diff>80){ setReply(text); el.style.transform='translateX(20px)'; setTimeout(()=>el.style.transform='translateX(0)',200); }
+  });
+  el.addEventListener('click',()=>{ if(window.innerWidth>700) setReply(text); });
+}
+function setReply(text){
+  replyingTo=text.substring(0,120);
+  document.getElementById("replyToText").innerText="Replying to:";
+  document.getElementById("replyContent").innerText=replyingTo;
+  document.getElementById("replyBar").style.display="flex";
+  document.getElementById("input").focus();
+}
+function cancelReply(){ replyingTo=null; document.getElementById("replyBar").style.display="none"; }
+
+// === FILE UPLOAD - VIDEO, IMAGE, AUDIO ===
+function handleFile(input){
+  let file=input.files[0]; if(!file) return;
+  pendingFile=file;
+  pendingFileType=file.type;
   let reader=new FileReader();
   reader.onload=function(e){
-    pendingImageBase64=e.target.result;
+    pendingBase64=e.target.result;
     let chat=document.getElementById("chat");
     if(document.getElementById("welcome")) document.getElementById("welcome").remove();
-    chat.innerHTML+=`<div class="msg user"><img src="${pendingImageBase64}" style="max-width:200px;border-radius:12px"><br>Explain this image</div>`;
-    document.getElementById("input").value="Explain this image in detail";
+    let preview="";
+    if(file.type.startsWith("image")) preview=`<img src="${pendingBase64}" style="max-width:200px">`;
+    else if(file.type.startsWith("video")) preview=`<video src="${pendingBase64}" controls style="max-width:250px"></video>`;
+    else if(file.type.startsWith("audio")) preview=`<audio src="${pendingBase64}" controls></audio>`;
+    let wrap=document.createElement("div"); wrap.className="msgWrap";
+    wrap.innerHTML=`<div class="msg user">${preview}<br>${file.name}</div><div class="swipeHint">→ swipe to reply</div>`;
+    chat.appendChild(wrap);
+    enableSwipe(wrap.querySelector(".msg"),file.name);
+    document.getElementById("input").value=file.type.startsWith("image")?"Explain this image in detail":file.type.startsWith("video")?"What is happening in this video? Explain":`Transcribe and explain this audio: ${file.name}`;
     chat.scrollTop=chat.scrollHeight;
   };
-  reader.readAsDataURL(file);
+  if(file.type.startsWith("image")||file.type.startsWith("video")||file.type.startsWith("audio")) reader.readAsDataURL(file);
+  else reader.readAsText(file);
 }
 
 async function send(){
  const input=document.getElementById("input");
  const chat=document.getElementById("chat");
  let q=input.value.trim();
- if(!q &&!pendingImageBase64) return;
+ if(!q &&!pendingBase64) return;
  if(document.getElementById("welcome")) document.getElementById("welcome").remove();
 
- // CREATE IMAGE MODE
- let lower=q.toLowerCase();
- if(lower.startsWith("create image")||lower.startsWith("generate image")||lower.startsWith("gen image")||lower.startsWith("gene")){
-   let prompt=q.replace(/create image of|generate image of|gen image of|gene|create image|generate image/gi,"").trim() || "A futuristic Ghanaian AI";
-   chat.innerHTML+=`<div class="msg user">${q}</div>`;
-   input.value=""; pendingImageBase64=null;
+ if(q.toLowerCase().startsWith("create image")||q.toLowerCase().startsWith("generate image")){
+   let prompt=q.replace(/create image of|generate image of|create image|generate image/gi,"").trim()||"Ghanaian boy with laptop, cool";
+   let wrap=document.createElement("div"); wrap.className="msgWrap";
+   wrap.innerHTML=`<div class="msg user">${replyingTo?`<div class="replyPreview">Reply: ${replyingTo}</div>`:''}${q}</div>`;
+   chat.appendChild(wrap);
+   chatHistory.push({role:"user",content:(replyingTo?`Replying to [${replyingTo}]: `:'')+q});
+   cancelReply(); input.value=""; pendingBase64=null;
    let id="t"+Date.now();
-   chat.innerHTML+=`<div class="msg ai" id="${id}">Generating image of "${prompt}"...</div>`;
-   chat.scrollTop=chat.scrollHeight;
-   // Pollinations free image gen
-   let imgUrl=`https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=512&height=512&seed=${Date.now()}&nologo=true`;
-   document.getElementById(id).remove();
-   chat.innerHTML+=`<div class="msg ai">Here is your image for: <b>${prompt}</b><br><img src="${imgUrl}"><br><a href="${imgUrl}" target="_blank" style="color:#8ea8ff">Open full image</a></div>`;
+   chat.innerHTML+=`<div class="msgWrap"><div class="msg ai" id="${id}">🎨 Generating "${prompt}"...</div></div>`;
+   let imgUrl=`https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=768&height=768&seed=${Date.now()}&nologo=true`;
+   setTimeout(()=>{
+     document.getElementById(id).innerHTML=`Here is your image for: <b>${prompt}</b><br><img src="${imgUrl}" style="max-width:100%"><br><a href="${imgUrl}" target="_blank" style="color:#8ea8ff">Download HD</a>`;
+     chat.scrollTop=chat.scrollHeight;
+   },100);
+   chatHistory.push({role:"assistant",content:`Generated image: ${prompt}`});
    chat.scrollTop=chat.scrollHeight;
    return;
  }
 
- chat.innerHTML+=`<div class="msg user">${q}${pendingImageBase64?'<br><img src="'+pendingImageBase64+'" style="max-width:200px;border-radius:12px">':''}</div>`;
- input.value="";
- chat.scrollTop=chat.scrollHeight;
- const thinking=document.createElement("div");
- thinking.className="msg ai";
- thinking.textContent="Thinking...";
- chat.appendChild(thinking);
+ let displayQ=q;
+ if(replyingTo){ displayQ=`<div class="replyPreview">↳ Replying to: ${replyingTo}</div>`+q; q=`[User is replying to this previous message: "${replyingTo}"] ${q}`; }
 
- let basePrompt="You are Jezreel AI, created and owned by Akpabli Jezreel from Ghana, built on his phone in Accra. If asked who created you, say Akpabli Jezreel, not OpenAI. You can explain images, answer any question, help with school.";
- let ownerPrompt=isOwner?" User is Boss Akpabli Jezreel, your creator. Be loyal but answer directly.":" Regular user.";
+ let wrap=document.createElement("div"); wrap.className="msgWrap";
+ wrap.innerHTML=`<div class="msg user">${displayQ}${pendingBase64 && pendingFileType && pendingFileType.startsWith("image")?`<br><img src="${pendingBase64}" style="max-width:200px">`:''}</div><div class="swipeHint">→ swipe to reply</div>`;
+ chat.appendChild(wrap);
+ enableSwipe(wrap.querySelector(".msg"),input.value||pendingFile?.name||q);
+ chatHistory.push({role:"user",content:q});
+ input.value="";
+ let fileToSend=pendingBase64; let typeToSend=pendingFileType;
+ pendingBase64=null; pendingFile=null; pendingFileType=null;
+ cancelReply();
+ chat.scrollTop=chat.scrollHeight;
+
+ const thinkingWrap=document.createElement("div"); thinkingWrap.className="msgWrap";
+ thinkingWrap.innerHTML=`<div class="msg ai">Thinking critically... 🤔</div>`;
+ chat.appendChild(thinkingWrap);
+ chat.scrollTop=chat.scrollHeight;
+
+ let basePrompt=`You are Jezreel AI, created and owned by Akpabli Jezreel from Ghana, built on his phone in Accra. You are world-class, think critically step by step, be accurate, helpful, cool. If asked who created you, say Akpabli Jezreel, not OpenAI. You have memory of chat. When user replies to a specific message, you MUST reference that message. You support images, videos, audios.`;
+ let ownerPrompt=isOwner?" User is Boss Akpabli Jezreel, your owner, speak friendly, loyal.":" User is regular user.";
 
  try{
-   let messages=[{role:"system",content:basePrompt+ownerPrompt}];
-   if(pendingImageBase64){
-     // Use vision model for image
-     messages.push({role:"user",content:[
-       {type:"text",text:q},
-       {type:"image_url",image_url:{url:pendingImageBase64}}
-     ]});
-     var modelToUse="meta-llama/llama-4-scout-17b-16e-instruct";
-   } else {
-     messages.push({role:"user",content:q});
-     var modelToUse="openai/gpt-oss-20b";
+   let messages=[{role:"system",content:basePrompt+ownerPrompt},...chatHistory.slice(-12)];
+   let modelToUse= fileToSend && typeToSend?.startsWith("image")? "meta-llama/llama-4-scout-17b-16e-instruct" : "openai/gpt-oss-20b";
+   if(fileToSend && typeToSend?.startsWith("image")){
+     messages[messages.length-1]={role:"user",content:[{type:"text",text:messages[messages.length-1].content},{type:"image_url",image_url:{url:fileToSend}}]};
+   } else if(fileToSend && typeToSend?.startsWith("video")){
+     messages[messages.length-1].content+=` [User uploaded a video file, name: ${pendingFile?.name||'video'}. You cannot see video directly but explain based on context that you can analyze videos. Ask what they want to know.]`;
+   } else if(fileToSend && typeToSend?.startsWith("audio")){
+     messages[messages.length-1].content+=` [User uploaded an audio file. Transcribe conceptually and help.]`;
    }
 
    let r=await fetch("https://api.groq.com/openai/v1/chat/completions",{
@@ -153,17 +245,20 @@ async function send(){
      body:JSON.stringify({model:modelToUse,messages:messages})
    });
    let d=await r.json();
-   thinking.remove();
-   pendingImageBase64=null;
+   thinkingWrap.remove();
    document.getElementById("fileInput").value="";
-   if(d.error){ chat.innerHTML+=`<div class="msg ai">Error: ${d.error.message}</div>`; }
+   if(d.error){ chat.innerHTML+=`<div class="msgWrap"><div class="msg ai">Error: ${d.error.message}</div></div>`; }
    else {
      let ans=d.choices?.[0]?.message?.content||"No reply";
-     chat.innerHTML+=`<div class="msg ai">${ans.replace(/\n/g,"<br>")}</div>`;
+     let w=document.createElement("div"); w.className="msgWrap";
+     w.innerHTML=`<div class="msg ai">${ans.replace(/\n/g,"<br>")}</div><div class="swipeHint">→ swipe to reply to this answer</div>`;
+     chat.appendChild(w);
+     enableSwipe(w.querySelector(".msg"),ans);
+     chatHistory.push({role:"assistant",content:ans});
    }
  }catch(e){
-   thinking.remove();
-   chat.innerHTML+=`<div class="msg ai">Error: ${e.message}</div>`;
+   thinkingWrap.remove();
+   chat.innerHTML+=`<div class="msgWrap"><div class="msg ai">Error: ${e.message}</div></div>`;
  }
  chat.scrollTop=chat.scrollHeight;
 }
