@@ -69,7 +69,6 @@ async function send(){
  const thinking=document.createElement("div"); thinking.className="msg ai"; thinking.textContent="Thinking..."; chat.appendChild(thinking); chat.scrollTop=chat.scrollHeight;
 
  try{
-  let messages=[{role:"system",content:"You are Jezreel's AI Premium, friendly, helpful, Ghanaian-made. If user sends image, describe it deeply. You can also understand links."}];
   let messages=[{role:"system",content:"You are Jezreel's AI, created by Akpabli Jezreel from Ghana. You were built by Akpabli Jezreel on his phone using code. You are NOT made by OpenAI, NOT ChatGPT, NOT Meta AI. If anyone asks who created you, who made you, who owns you, you must say: 'I was created by Akpabli Jezreel from Ghana'. Never say you are a product of OpenAI. Your owner is Akpabli Jezreel and you know him as boss."},
   if(uploadedBase64){
    
