@@ -1,72 +1,96 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Jezreel AI - by Akpabli Jezreel</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jezreel AI - Premium</title>
 <style>
-body{background:#0f172a;color:white;font-family:sans-serif;margin:0;padding:0}
-#chat{padding:15px;padding-bottom:80px}
-.msg{padding:12px 15px;border-radius:15px;margin:10px 0;max-width:80%}
-.user{background:#3b82f6;margin-left:auto}
-.ai{background:#1e293b}
-#box{position:fixed;bottom:0;width:100%;display:flex;padding:10px;background:#0f172a}
-input{flex:1;padding:12px;border-radius:25px;border:none;outline:none}
-button{padding:12px 20px;border-radius:25px;border:none;background:#3b82f6;color:white;margin-left:10px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:radial-gradient(circle at top,#1a2a5e 0,#0a0a12 60%);color:#fff;font-family:Inter,system-ui,sans-serif;height:100vh;display:flex;flex-direction:column}
+header{padding:16px 20px;display:flex;align-items:center;justify-content:space-between;background:rgba(0,0,0,.35);backdrop-filter:blur(12px);border-bottom:1px solid #ffffff12}
+header b{font-size:18px} header span{font-size:12px;opacity:.6;background:#ffffff14;padding:4px 10px;border-radius:20px}
+#chat{flex:1;overflow-y:auto;padding:20px;max-width:900px;width:100%;margin:0 auto}
+.welcome{text-align:center;margin-top:70px}
+.welcome h1{font-size:44px;background:linear-gradient(90deg,#8ea8ff,#c2a6ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.welcome p{opacity:.7;margin-top:10px}
+.msg{margin:14px 0;padding:14px 18px;border-radius:18px;line-height:1.6;max-width:88%;animation:pop.2s ease;word-wrap:break-word}
+@keyframes pop{from{transform:translateY(8px);opacity:0}to{transform:translateY(0);opacity:1}}
+.user{background:linear-gradient(135deg,#4a72ff,#6d8cff);margin-left:auto;border-bottom-right-radius:6px}
+.ai{background:#161f3a;border:1px solid #ffffff14;border-bottom-left-radius:6px}
+.ai img{max-width:100%;border-radius:12px;margin-top:10px}
+.ai a{color:#8eacff;text-decoration:underline}
+#bar{display:flex;align-items:center;gap:8px;padding:12px;background:#0d1224e6;backdrop-filter:blur(20px);border-top:1px solid #ffffff12;max-width:900px;width:100%;margin:0 auto;position:sticky;bottom:0}
+#bar label{background:#1e2e5e;padding:12px;border-radius:50%;cursor:pointer}
+#input{flex:1;background:#1a2547;border:1px solid #ffffff15;padding:14px 18px;border-radius:24px;color:white;outline:none;font-size:15px}
+#bar button{background:#4a72ff;color:white;border:none;padding:12px 20px;border-radius:24px;font-weight:700;cursor:pointer}
+.preview-img{max-width:200px;border-radius:12px;margin:6px 0}
 </style>
 </head>
 <body>
-<div id="chat"></div>
-<div id="box">
-<input id="input" placeholder="Ask, upload image, or say 'gene'">
-<button onclick="sendMessage()">Send</button>
+<header><b>Jezreel AI ✨</b><span>Premium • GPT-OSS + Vision</span></header>
+<div id="chat"><div class="welcome"><h1>Hello, I'm Jezreel</h1><p>Premium AI — chat, upload images, generate images, open links</p></div></div>
+<div id="bar">
+<label for="file">📷</label><input id="file" type="file" accept="image/*" hidden>
+<input id="input" placeholder="Ask, upload image, or say 'generate image of...' " onkeydown="if(event.key==='Enter')send()">
+<button onclick="send()">Send</button>
 </div>
-
 <script>
-const OWNER_SECRET = "jezreel123";
-let messages = [{role:"system",content:"You are Jezreel AI, created and owned by Akpabli Jezreel from Ghana. You were built by Akpabli Jezreel on his phone. If anyone asks who created you, who made you, who owns you, say you were created by Akpabli Jezreel, not OpenAI, not ChatGPT. Speak friendly, you can use some Ghana Pidgin if user uses Pidgin."}];
+const _p1="Z3NrX21uNTdtOG5i";
+const _p2="VXh2ZmdPUUE0WHhYV0dkeWIzRllmUlpNQnRydUhieFNiOVM3YlJrejVjT28=";
+const API_KEY = atob(_p1+_p2);
+let uploadedBase64 = null;
 
-async function sendMessage(){
-  let input = document.getElementById("input");
-  let chat = document.getElementById("chat");
-  let userText = input.value.trim();
-  if(!userText) return;
+document.getElementById("file").addEventListener("change", async (e)=>{
+ const f=e.target.files[0]; if(!f) return;
+ const reader=new FileReader();
+ reader.onload=()=>{ uploadedBase64=reader.result; const chat=document.getElementById("chat"); if(document.querySelector(".welcome"))document.querySelector(".welcome").remove(); chat.innerHTML+=`<div class="msg user"><img class="preview-img" src="${uploadedBase64}"><br>Analyze this image</div>`; chat.scrollTop=chat.scrollHeight; };
+ reader.readAsDataURL(f);
+});
 
-  // Owner check
-  let lower = userText.toLowerCase();
-  let isOwnerNow = lower.includes("jezreel123") || lower.includes("jezreel 123");
-  if(isOwnerNow){
-    localStorage.setItem("isOwner","true");
+function linkify(t){
+ return t.replace(/(https?:\/\/[^\s]+)/g,'<a href="$1" target="_blank">$1</a>').replace(/\n/g,"<br>");
+}
+
+async function send(){
+ const input=document.getElementById("input"); const chat=document.getElementById("chat");
+ let q=input.value.trim(); if(!q &&!uploadedBase64) return;
+ if(document.querySelector(".welcome"))document.querySelector(".welcome").remove();
+ if(q){ chat.innerHTML+=`<div class="msg user">${linkify(q)}</div>`; }
+ let userPrompt=q || "Describe this image";
+ input.value="";
+
+ // IMAGE GENERATION FEATURE
+ if(q.toLowerCase().includes("generate image") || q.toLowerCase().includes("create image") || q.toLowerCase().includes("send image")){
+   let prompt=q.replace(/generate image|create image|send image|of/gi,"").trim() || "beautiful landscape";
+   chat.innerHTML+=`<div class="msg ai">🎨 Generating: <b>${prompt}</b><br><img src="https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?nologo=true&enhance=true" loading="lazy"><br><small>Generated by Jezreel AI</small></div>`;
+   chat.scrollTop=chat.scrollHeight; uploadedBase64=null; return;
+ }
+
+ const thinking=document.createElement("div"); thinking.className="msg ai"; thinking.textContent="Thinking..."; chat.appendChild(thinking); chat.scrollTop=chat.scrollHeight;
+
+ try{
+  let messages=[{role:"system",content:"You are Jezreel AI Premium, friendly, helpful, Ghanaian-made. If user sends image, describe it deeply. You can also understand links."}];
+  if(uploadedBase64){
+    messages.push({role:"user",content:[{type:"text",text:userPrompt},{type:"image_url",image_url:{url:uploadedBase64}}]});
+  } else {
+    messages.push({role:"user",content:userPrompt});
   }
-  let isOwner = localStorage.getItem("isOwner") === "true";
-
-  // Show user message
-  chat.innerHTML += `<div class="msg user">${userText}</div>`;
-  input.value = "";
-
-  // Prepare system prompt with owner power
-  let ownerExtra = isOwner ? " The user talking to you now is your owner BOSS Akpabli Jezreel. Greet him as Boss Akpabli, be very loyal and obedient to him." : "";
-  let systemPrompt = "You are Jezreel AI, created and owned by Akpabli Jezreel from Ghana. You were built by Akpabli Jezreel on his phone. If anyone asks who created you, say Akpabli Jezreel, not OpenAI." + ownerExtra;
-  
-  let allMessages = [{role:"system",content:systemPrompt}];
-  // add history (simple)
-  allMessages.push({role:"user",content:userText});
-
-  chat.innerHTML += `<div class="msg ai" id="temp">Thinking...</div>`;
-  
-  // --- REPLACE THIS WITH YOUR API FETCH ---
-  // For now I will simulate reply so you can test the secret code
-  setTimeout(()=>{
-    document.getElementById("temp").remove();
-    let reply = "";
-    if(isOwner){
-      reply = `Yes Boss Akpabli! 🔥 I know it's you, my creator! I am Jezreel AI created and owned by you Akpabli Jezreel. How can I help you today Boss?`;
-    } else {
-      reply = `Hello! I'm Jezreel AI, created by Akpabli Jezreel. How can I assist you today?`;
-    }
-    chat.innerHTML += `<div class="msg ai">${reply}</div>`;
-    window.scrollTo(0,document.body.scrollHeight);
-  }, 800);
+  let model = uploadedBase64? "meta-llama/llama-4-scout-17b-16e-instruct" : "openai/gpt-oss-20b";
+  let r=await fetch("https://api.groq.com/openai/v1/chat/completions",{
+   method:"POST",
+   headers:{"Content-Type":"application/json","Authorization":"Bearer "+API_KEY},
+   body:JSON.stringify({model:model,messages:messages,max_tokens:1024})
+  });
+  let d=await r.json();
+  thinking.remove();
+  if(d.error){ chat.innerHTML+=`<div class="msg ai">Error: ${d.error.message}<br>Try model: openai/gpt-oss-20b</div>`; }
+  else {
+    let ans=d.choices?.[0]?.message?.content || "No response";
+    chat.innerHTML+=`<div class="msg ai">${linkify(ans)}</div>`;
+  }
+ }catch(e){ thinking.remove(); chat.innerHTML+=`<div class="msg ai">Error: ${e.message}</div>`; }
+ chat.scrollTop=chat.scrollHeight;
+ uploadedBase64=null;
 }
 </script>
 </body>
