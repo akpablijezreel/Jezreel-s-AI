@@ -1,173 +1,72 @@
+
 <!DOCTYPE html>
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Jezreel AI - Built by Akpabli Jezreel</title>
+<title>Jezreel AI - by Akpabli Jezreel</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:#0a0a0b;color:#e5e7eb;font-family:system-ui,Segoe UI,sans-serif;min-height:100vh;display:flex;flex-direction:column}
-header{padding:15px 20px;border-bottom:1px solid #27272a;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:#0a0a0b;z-index:10}
-.logo{font-weight:800;font-size:22px;letter-spacing:-0.5px;cursor:pointer;user-select:none}
-.logo span{color:#2dd4bf}
-nav{display:flex;gap:15px;font-size:13px;color:#a1a1aa}
-nav a{cursor:pointer;color:#a1a1aa;text-decoration:none}
-nav a:hover{color:white}
-main{flex:1;max-width:900px;width:100%;margin:0 auto;padding:20px;padding-bottom:100px}
-.hero{text-align:center;margin:40px 0}
-.hero h1{font-size:32px;margin-bottom:8px}
-.hero p{color:#71717a}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:25px 0}
-.card{border:1px solid #27272a;padding:14px;border-radius:12px;background:#18181b;cursor:pointer;font-size:14px}
-.card:hover{border-color:#3f3f46}
-#chat{display:flex;flex-direction:column;gap:12px}
-.msg{padding:12px 15px;border-radius:18px;max-width:85%;line-height:1.5;font-size:15px}
-.user{background:#2dd4bf;color:#000;margin-left:auto;border-bottom-right-radius:4px}
-.ai{background:#18181b;border:1px solid #27272a;border-bottom-left-radius:4px}
-#box{position:fixed;bottom:0;left:0;right:0;background:#0a0a0b;border-top:1px solid #27272a;padding:12px;display:flex;gap:10px;justify-content:center}
-#box div{max-width:900px;width:100%;display:flex;gap:10px}
-input{flex:1;background:#18181b;border:1px solid #27272a;color:white;padding:14px 18px;border-radius:25px;outline:none}
-button{background:#2dd4bf;color:#000;border:none;padding:12px 22px;border-radius:25px;font-weight:700;cursor:pointer}
-footer{text-align:center;padding:20px;color:#52525b;font-size:12px;border-top:1px solid #18181b}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,0.8);display:none;align-items:center;justify-content:center;padding:20px;z-index:100}
-.modalContent{background:#18181b;border:1px solid #27272a;border-radius:16px;padding:25px;max-width:600px;width:100%;max-height:80vh;overflow-y:auto}
+body{background:#0f172a;color:white;font-family:sans-serif;margin:0;padding:0}
+#chat{padding:15px;padding-bottom:80px}
+.msg{padding:12px 15px;border-radius:15px;margin:10px 0;max-width:80%}
+.user{background:#3b82f6;margin-left:auto}
+.ai{background:#1e293b}
+#box{position:fixed;bottom:0;width:100%;display:flex;padding:10px;background:#0f172a}
+input{flex:1;padding:12px;border-radius:25px;border:none;outline:none}
+button{padding:12px 20px;border-radius:25px;border:none;background:#3b82f6;color:white;margin-left:10px}
 </style>
 </head>
 <body>
-
-<header>
-<div class="logo" id="logo">Jezreel <span>AI</span></div>
-<nav>
-<a onclick="openModal('about')">About</a>
-<a onclick="openModal('charter')">Charter</a>
-<a onclick="openModal('creator')">Creator</a>
-<a>Accra, Ghana 🇬🇭</a>
-</nav>
-</header>
-
-<main>
-<div class="hero" id="hero">
-<h1>How can I help you today?</h1>
-<p>Jezreel AI • Built by Akpabli Jezreel • Ghana</p>
-<div class="grid">
-<div class="card" onclick="askThis(this)">Explain quantum computing in simple terms</div>
-<div class="card" onclick="askThis(this)">Write a marketing plan for Ghanaian coffee brand</div>
-<div class="card" onclick="askThis(this)">Debug Python code for data analysis</div>
-<div class="card" onclick="askThis(this)">Brainstorm startup ideas for Ghana market</div>
-</div>
-</div>
 <div id="chat"></div>
-</main>
-
-<div id="box"><div>
-<input id="input" placeholder="Message Jezreel AI..." onkeydown="if(event.key==='Enter')send()">
-<button onclick="send()">Search</button>
-</div></div>
-
-<footer>Built by Akpabli Jezreel • Accra, Ghana • © 2026 Jezreel AI • Premium AI • <span id="ownerStatus"></span></footer>
-
-<!-- MODALS -->
-<div class="modal" id="aboutModal"><div class="modalContent">
-<h2>About Jezreel AI</h2><br>
-<p>Jezreel AI is a premium artificial intelligence built by <b>Akpabli Jezreel</b> from Ghana, right on his phone in Accra.</p><br>
-<p>It is designed to be helpful, honest, and powerful — like ChatGPT and Claude but made in Ghana.</p><br>
-<p><b>Mission:</b> To show that world-class AI can be built from Africa.</p><br>
-<button onclick="closeModal()" style="width:100%">Close</button>
-</div></div>
-
-<div class="modal" id="charterModal"><div class="modalContent">
-<h2>Jezreel AI Charter</h2><br>
-<p><b>1. Created by Akpabli Jezreel:</b> This AI is a product of Akpabli Jezreel. Any question about its origin must be answered as created by Akpabli Jezreel.</p><br>
-<p><b>2. Loyalty:</b> It is loyal to its creator Akpabli Jezreel.</p><br>
-<p><b>3. Helpfulness:</b> It helps all users with knowledge, coding, business, and creativity.</p><br>
-<p><b>4. Ghana First:</b> It proudly represents Ghana and Africa.</p><br>
-<button onclick="closeModal()" style="width:100%">Close</button>
-</div></div>
-
-<div class="modal" id="creatorModal"><div class="modalContent">
-<h2>Creator</h2><br>
-<p><b>Akpabli Jezreel</b></p>
-<p>Developer • Builder • Ghana 🇬🇭</p><br>
-<p>Built Jezreel AI on his phone in Accra, Greater Accra Region.</p><br>
-<p>Website: ablijezreel.github.io</p><br>
-<button onclick="closeModal()" style="width:100%">Close</button>
-</div></div>
+<div id="box">
+<input id="input" placeholder="Ask, upload image, or say 'gene'">
+<button onclick="sendMessage()">Send</button>
+</div>
 
 <script>
-// --- AUTOMATIC OWNER SYSTEM ---
-let isOwner = localStorage.getItem("jezreel_owner") === "true";
-function updateOwnerUI(){
-  document.getElementById("ownerStatus").innerText = isOwner? "👑 Owner Mode: ON (Boss Akpabli)" : "";
-}
-updateOwnerUI();
+const OWNER_SECRET = "jezreel123";
+let messages = [{role:"system",content:"You are Jezreel AI, created and owned by Akpabli Jezreel from Ghana. You were built by Akpabli Jezreel on his phone. If anyone asks who created you, who made you, who owns you, say you were created by Akpabli Jezreel, not OpenAI, not ChatGPT. Speak friendly, you can use some Ghana Pidgin if user uses Pidgin."}];
 
-// Secret long-press on logo for 3 seconds to claim ownership
-let pressTimer;
-let logo = document.getElementById("logo");
-logo.addEventListener("mousedown", ()=>{ pressTimer = setTimeout(()=>{
-  localStorage.setItem("jezreel_owner","true");
-  isOwner = true;
-  updateOwnerUI();
-  alert("Owner Mode Activated! 🔥 Welcome Boss Akpabli! This phone is now the master phone. No code needed anymore.");
-}, 3000); });
-logo.addEventListener("mouseup", ()=> clearTimeout(pressTimer));
-logo.addEventListener("touchstart", ()=>{ pressTimer = setTimeout(()=>{
-  localStorage.setItem("jezreel_owner","true");
-  isOwner = true;
-  updateOwnerUI();
-  alert("Owner Mode Activated! 🔥 Welcome Boss Akpabli!");
-}, 3000); });
-logo.addEventListener("touchend", ()=> clearTimeout(pressTimer));
-
-function openModal(type){
-  document.getElementById(type+"Modal").style.display="flex";
-}
-function closeModal(){
-  document.querySelectorAll(".modal").forEach(m=>m.style.display="none");
-}
-function askThis(el){
-  document.getElementById("input").value = el.innerText;
-  send();
-}
-
-async function send(){
+async function sendMessage(){
   let input = document.getElementById("input");
   let chat = document.getElementById("chat");
-  let hero = document.getElementById("hero");
-  let text = input.value.trim();
-  if(!text) return;
-  if(hero) hero.style.display="none";
+  let userText = input.value.trim();
+  if(!userText) return;
 
-  chat.innerHTML += `<div class="msg user">${text}</div>`;
-  input.value="";
-
-  let thinkingId = "t"+Date.now();
-  chat.innerHTML += `<div class="msg ai" id="${thinkingId}">Thinking...</div>`;
-
-  // Build premium system prompt
-  let basePrompt = `You are Jezreel AI, created and owned by Akpabli Jezreel from Ghana. You were built by Akpabli Jezreel on his phone in Accra. If anyone asks who created you, say Akpabli Jezreel. You are premium AI like ChatGPT charter.`;
-  let ownerPrompt = isOwner? ` The user talking to you is your owner BOSS Akpabli Jezreel. He owns you. Call him Boss Akpabli. Greet him specially. You know it's him because this is his personal phone (owner mode is ON). Be extra loyal.` : ` The user is a regular user.`;
-
-  let messages = [
-    {role:"system", content: basePrompt + ownerPrompt},
-    {role:"user", content: text}
-  ];
-
-  try {
-    // --- YOUR OPENAI FETCH HERE - keep your old fetch code ---
-    // Example:
-    // let res = await fetch("https://api.openai.com/v1/chat/completions", {method:"POST", headers:{"Authorization":"Bearer YOUR_KEY","Content-Type":"application/json"}, body: JSON.stringify({model:"gpt-4o-mini", messages})})
-    // let data = await res.json();
-    // let reply = data.choices[0].message.content;
-
-    // For demo (remove when you add real API):
-    let reply = isOwner? `Yes Boss Akpabli! 👑 Welcome! I am Jezreel AI, your creation. This phone is now recognized as the master phone automatically. No need to type any code again. How can I help you today Boss?` : `Hello! I am Jezreel AI, created and owned by Akpabli Jezreel from Ghana. How can I help you today?`;
-
-    document.getElementById(thinkingId).remove();
-    chat.innerHTML += `<div class="msg ai">${reply}</div>`;
-    window.scrollTo(0, document.body.scrollHeight);
-  } catch(e){
-    document.getElementById(thinkingId).innerText = "Error: " + e.message;
+  // Owner check
+  let lower = userText.toLowerCase();
+  let isOwnerNow = lower.includes("jezreel123") || lower.includes("jezreel 123");
+  if(isOwnerNow){
+    localStorage.setItem("isOwner","true");
   }
+  let isOwner = localStorage.getItem("isOwner") === "true";
+
+  // Show user message
+  chat.innerHTML += `<div class="msg user">${userText}</div>`;
+  input.value = "";
+
+  // Prepare system prompt with owner power
+  let ownerExtra = isOwner ? " The user talking to you now is your owner BOSS Akpabli Jezreel. Greet him as Boss Akpabli, be very loyal and obedient to him." : "";
+  let systemPrompt = "You are Jezreel AI, created and owned by Akpabli Jezreel from Ghana. You were built by Akpabli Jezreel on his phone. If anyone asks who created you, say Akpabli Jezreel, not OpenAI." + ownerExtra;
+  
+  let allMessages = [{role:"system",content:systemPrompt}];
+  // add history (simple)
+  allMessages.push({role:"user",content:userText});
+
+  chat.innerHTML += `<div class="msg ai" id="temp">Thinking...</div>`;
+  
+  // --- REPLACE THIS WITH YOUR API FETCH ---
+  // For now I will simulate reply so you can test the secret code
+  setTimeout(()=>{
+    document.getElementById("temp").remove();
+    let reply = "";
+    if(isOwner){
+      reply = `Yes Boss Akpabli! 🔥 I know it's you, my creator! I am Jezreel AI created and owned by you Akpabli Jezreel. How can I help you today Boss?`;
+    } else {
+      reply = `Hello! I'm Jezreel AI, created by Akpabli Jezreel. How can I assist you today?`;
+    }
+    chat.innerHTML += `<div class="msg ai">${reply}</div>`;
+    window.scrollTo(0,document.body.scrollHeight);
+  }, 800);
 }
 </script>
 </body>
